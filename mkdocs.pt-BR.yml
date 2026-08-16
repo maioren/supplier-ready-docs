@@ -1,5 +1,5 @@
 INHERIT: mkdocs.yml
-site_description: Entenda as exigências do comprador. Saiba o que falta. Esteja Ready.
+site_description: Entenda as exigências do cliente. Saiba o que falta. Esteja Ready.
 site_dir: site/pt-BR
 docs_dir: docs/pt-BR
 
@@ -43,8 +43,9 @@ nav:
       - Sua primeira análise: getting-started/first-analysis.md
   - Conceitos:
       - Visão geral: concepts/index.md
-      - Exigências do comprador: concepts/buyer-requirements.md
+      - Exigências do cliente: concepts/buyer-requirements.md
       - Interpretação de requisitos: concepts/requirement-interpretation.md
+      - Rastreabilidade e evidências: concepts/traceability-evidence.md
       - Readiness: concepts/readiness.md
   - Guias:
       - Visão geral: guides/index.md
