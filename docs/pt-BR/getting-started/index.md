@@ -40,13 +40,13 @@ Quando tudo que precisa ser resolvido estiver resolvido, sua empresa está **Rea
 
 ## O que já existe e o que ainda estamos construindo
 
-O Supplier Ready está em desenvolvimento. Por isso, esta documentação diferencia capacidades **disponíveis** de experiências que representam a **direção do produto**.
+O Supplier Ready está em desenvolvimento. Por isso, esta documentação diferencia capacidades já validadas no **motor do MVP** da experiência integrada que ainda estamos construindo para o usuário.
 
-!!! info "Disponível"
-    Uma capacidade implementada e validada no produto atual.
+!!! info "Disponível no MVP"
+    Uma capacidade que já existe e foi validada no motor do Supplier Ready. Isso não significa necessariamente que ela já esteja disponível em uma interface pública completa.
 
-!!! note "Em desenvolvimento"
-    Uma capacidade que faz parte do fluxo planejado, mas que ainda pode mudar antes de estar disponível.
+!!! note "Em desenvolvimento — experiência do produto"
+    Uma capacidade ou experiência que faz parte do fluxo planejado, mas que ainda pode mudar antes de estar disponível de forma integrada para o usuário.
 
 **Nunca vamos documentar uma capacidade futura como se ela já estivesse disponível.**
 
