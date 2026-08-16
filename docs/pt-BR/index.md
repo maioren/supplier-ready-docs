@@ -4,8 +4,8 @@
 
 Transforme exigências de cadastro e homologação em um plano claro. Entenda o que é necessário, identifique o que já está resolvido e saiba exatamente o que ainda precisa ser feito.
 
-[Começar uma análise](getting-started/first-analysis.md){ .md-button .md-button--primary }
-[Entender como funciona](getting-started/index.md){ .md-button }
+[Comece por aqui](getting-started/index.md){ .md-button .md-button--primary }
+[Entenda o produto](concepts/index.md){ .md-button }
 
 ---
 
@@ -115,11 +115,14 @@ Quando tudo que precisa ser resolvido estiver resolvido, sua empresa está **Rea
 
 ---
 
-## Quer descobrir o que falta para sua empresa estar Ready?
+## Continue pela documentação
 
-Estamos construindo as primeiras experiências do Supplier Ready.
+Se esta é sua primeira visita, comece entendendo o fluxo do Supplier Ready. Para acompanhar a direção do produto, veja também o que estamos construindo.
 
-[Acompanhar o desenvolvimento](product/roadmap.md){ .md-button .md-button--primary }
-[Ver como funciona](getting-started/index.md){ .md-button }
+[Primeiros passos](getting-started/index.md){ .md-button .md-button--primary }
+[O que estamos construindo](product/roadmap.md){ .md-button }
 
-<!-- Public product documentation lives in this dedicated repository. -->
+---
+
+**Documentação do Supplier Ready**  
+O produto está em desenvolvimento. Esta documentação evolui junto com as capacidades validadas do produto.
