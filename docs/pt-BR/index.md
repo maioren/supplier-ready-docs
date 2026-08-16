@@ -121,3 +121,5 @@ Estamos construindo as primeiras experiências do Supplier Ready.
 
 [Acompanhar o desenvolvimento](product/roadmap.md){ .md-button .md-button--primary }
 [Ver como funciona](getting-started/index.md){ .md-button }
+
+<!-- Public product documentation lives in this dedicated repository. -->
