@@ -1,0 +1,17 @@
+site_name: Supplier Ready
+site_url: https://maioren.github.io/supplier-ready-docs/
+repo_name: maioren/supplier-ready-docs
+repo_url: https://github.com/maioren/supplier-ready-docs
+
+theme:
+  name: material
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences
+
+plugins:
+  - search

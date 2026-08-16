@@ -1,0 +1,54 @@
+INHERIT: mkdocs.yml
+site_description: Entenda as exigências do comprador. Saiba o que falta. Esteja Ready.
+site_dir: site/pt-BR
+docs_dir: docs/pt-BR
+
+theme:
+  language: pt-BR
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Mudar para modo escuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Mudar para modo claro
+
+extra:
+  alternate:
+    - name: Português (Brasil)
+      link: https://maioren.github.io/supplier-ready-docs/pt-BR/
+      lang: pt-BR
+    - name: English
+      link: https://maioren.github.io/supplier-ready-docs/en/
+      lang: en
+    - name: Español
+      link: https://maioren.github.io/supplier-ready-docs/es/
+      lang: es
+
+nav:
+  - Início: index.md
+  - Primeiros passos:
+      - Visão geral: getting-started/index.md
+      - Sua primeira análise: getting-started/first-analysis.md
+  - Conceitos:
+      - Visão geral: concepts/index.md
+      - Exigências do comprador: concepts/buyer-requirements.md
+      - Interpretação de requisitos: concepts/requirement-interpretation.md
+      - Readiness: concepts/readiness.md
+  - Guias:
+      - Visão geral: guides/index.md
+  - Referência:
+      - Visão geral: reference/index.md
+  - Produto:
+      - O que estamos construindo: product/roadmap.md
