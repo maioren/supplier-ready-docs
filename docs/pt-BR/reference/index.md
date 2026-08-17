@@ -22,15 +22,15 @@ Valores fechados usados atualmente pelo domínio, incluindo estados da análise,
 
 ### Modelo de requisito
 
-Referência campo a campo da estrutura produzida pelo Interpreter para representar um requisito candidato.
+Referência campo a campo da estrutura produzida pelo Interpreter para representar um requisito candidato, incluindo tipos, nulabilidade e invariantes de validação.
 
-**Próxima referência a ser publicada.**
+[Consultar Modelo de requisito →](requirement-model.md)
 
 ### Readiness
 
 Fórmula, pesos, contadores e regras determinísticas usadas pelo cálculo atual de readiness.
 
-**Planejado para esta seção.**
+**Próxima referência a ser publicada.**
 
 ### API v0
 
