@@ -36,13 +36,13 @@ Fórmula, pesos, contadores, estrutura de entrada e saída e regras determiníst
 
 Endpoints HTTP realmente expostos pela aplicação atual, seus contratos de entrada e saída e códigos de resposta.
 
-**Próxima referência a ser publicada.**
+[Consultar API v0 →](api-v0.md)
 
 ### Erros
 
 Códigos de erro públicos do MVP e seus significados.
 
-**Planejado para esta seção.**
+**Próxima referência a ser publicada.**
 
 ---
 
