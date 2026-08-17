@@ -28,15 +28,15 @@ Referência campo a campo da estrutura produzida pelo Interpreter para represent
 
 ### Readiness
 
-Fórmula, pesos, contadores e regras determinísticas usadas pelo cálculo atual de readiness.
+Fórmula, pesos, contadores, estrutura de entrada e saída e regras determinísticas usadas pelo cálculo atual de readiness.
 
-**Próxima referência a ser publicada.**
+[Consultar Readiness →](readiness.md)
 
 ### API v0
 
 Endpoints HTTP realmente expostos pela aplicação atual, seus contratos de entrada e saída e códigos de resposta.
 
-**Planejado para esta seção.**
+**Próxima referência a ser publicada.**
 
 ### Erros
 
