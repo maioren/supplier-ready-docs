@@ -60,5 +60,6 @@ nav:
       - Estados e enums: reference/states-enums.md
       - Modelo de requisito: reference/requirement-model.md
       - Readiness: reference/readiness.md
+      - API v0: reference/api-v0.md
   - Produto:
       - O que estamos construindo: product/roadmap.md
