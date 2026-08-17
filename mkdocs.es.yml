@@ -1,5 +1,5 @@
 INHERIT: mkdocs.yml
-site_description: Entienda los requisitos del comprador. Sepa qué falta. Esté Ready.
+site_description: Entienda las exigencias de su cliente. Sepa qué falta. Esté Ready.
 site_dir: site/es
 docs_dir: docs/es
 
@@ -12,17 +12,6 @@ theme:
     - search.suggest
     - search.highlight
     - content.code.copy
-  palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      toggle:
-        icon: material/brightness-7
-        name: Cambiar al modo oscuro
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      toggle:
-        icon: material/brightness-4
-        name: Cambiar al modo claro
 
 extra:
   alternate:
@@ -43,8 +32,9 @@ nav:
       - Su primer análisis: getting-started/first-analysis.md
   - Conceptos:
       - Visión general: concepts/index.md
-      - Requisitos del comprador: concepts/buyer-requirements.md
+      - Exigencias del cliente: concepts/buyer-requirements.md
       - Interpretación de requisitos: concepts/requirement-interpretation.md
+      - Trazabilidad y evidencias: concepts/traceability-evidence.md
       - Readiness: concepts/readiness.md
   - Guías:
       - Visión general: guides/index.md

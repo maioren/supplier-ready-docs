@@ -1,7 +1,14 @@
 # Concepts
 
-Supplier Ready is organized around a few product concepts that stay clear even as the technology evolves.
+Supplier Ready is organized around product concepts that remain clear even as the technology evolves.
 
-- [Buyer requirements](buyer-requirements.md)
-- [Requirement interpretation](requirement-interpretation.md)
-- [Readiness](readiness.md)
+We recommend reading them in this order:
+
+1. [Customer requirements](buyer-requirements.md)
+2. [Requirement interpretation](requirement-interpretation.md)
+3. [Traceability and evidence](traceability-evidence.md)
+4. [Readiness](readiness.md)
+
+Together, they form the core model:
+
+**Customer requirement → Interpretation → Evidence → Evaluation → Readiness → Ready**

@@ -1,5 +1,5 @@
 INHERIT: mkdocs.yml
-site_description: Understand buyer requirements. Know what is missing. Get Ready.
+site_description: Understand customer requirements. Know what's missing. Be Ready.
 site_dir: site/en
 docs_dir: docs/en
 
@@ -12,17 +12,6 @@ theme:
     - search.suggest
     - search.highlight
     - content.code.copy
-  palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
 
 extra:
   alternate:
@@ -43,8 +32,9 @@ nav:
       - Your first analysis: getting-started/first-analysis.md
   - Concepts:
       - Overview: concepts/index.md
-      - Buyer requirements: concepts/buyer-requirements.md
+      - Customer requirements: concepts/buyer-requirements.md
       - Requirement interpretation: concepts/requirement-interpretation.md
+      - Traceability and evidence: concepts/traceability-evidence.md
       - Readiness: concepts/readiness.md
   - Guides:
       - Overview: guides/index.md
