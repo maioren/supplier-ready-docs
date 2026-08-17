@@ -22,9 +22,9 @@ Como o produto ainda está em desenvolvimento, os guias também deixam explícit
 
 Inicie uma análise a partir da identificação da empresa e das exigências recebidas de um cliente.
 
-O motor já possui a capacidade de criar uma análise. O guia documentará o comportamento existente sem presumir uma interface que ainda não foi construída.
+O motor já possui a capacidade de criar uma análise. O guia documenta o comportamento existente sem presumir uma interface que ainda não foi construída.
 
-**Próximo guia a ser publicado.**
+[Criar uma análise →](create-analysis.md)
 
 ### Revisar requisitos interpretados
 
