@@ -50,6 +50,11 @@ nav:
   - Guias:
       - Visão geral: guides/index.md
       - Criar uma análise: guides/create-analysis.md
+      - Revisar requisitos interpretados: guides/review-interpreted-requirements.md
+      - Resolver esclarecimentos: guides/resolve-clarifications.md
+      - Avaliar um requisito: guides/assess-requirement.md
+      - Entender e resolver gaps: guides/resolve-gaps.md
+      - Acompanhar a Readiness: guides/track-readiness.md
   - Referência:
       - Visão geral: reference/index.md
   - Produto:
