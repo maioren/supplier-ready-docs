@@ -57,5 +57,6 @@ nav:
       - Acompanhar a Readiness: guides/track-readiness.md
   - Referência:
       - Visão geral: reference/index.md
+      - Estados e enums: reference/states-enums.md
   - Produto:
       - O que estamos construindo: product/roadmap.md
