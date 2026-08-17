@@ -49,6 +49,7 @@ nav:
       - Readiness: concepts/readiness.md
   - Guias:
       - Visão geral: guides/index.md
+      - Criar uma análise: guides/create-analysis.md
   - Referência:
       - Visão geral: reference/index.md
   - Produto:
