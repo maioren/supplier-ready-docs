@@ -40,9 +40,9 @@ Endpoints HTTP realmente expostos pela aplicação atual, seus contratos de entr
 
 ### Erros
 
-Códigos de erro públicos do MVP e seus significados.
+Códigos de erro públicos do MVP, envelope de erro, status HTTP e distinção em relação aos erros de validação do framework.
 
-**Próxima referência a ser publicada.**
+[Consultar Erros →](errors.md)
 
 ---
 
@@ -52,4 +52,4 @@ A presença de um item nesta seção significa que ele **existe no contrato atua
 
 Quando um contrato público mudar no MVP, sua referência correspondente deve ser atualizada junto com a implementação.
 
-Recursos futuros como o estado de domínio **Ready**, evidências completas de atendimento, novos tipos de fonte ou endpoints ainda não expostos devem permanecer fora desta seção até fazerem parte efetiva do contrato.
+Recursos futuros como evidências completas de atendimento ou novos tipos de fonte ainda não implementados devem permanecer fora desta seção até fazerem parte efetiva do contrato.
