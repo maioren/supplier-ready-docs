@@ -38,7 +38,18 @@ nav:
       - Readiness: concepts/readiness.md
   - Guides:
       - Overview: guides/index.md
+      - Create an analysis: guides/create-analysis.md
+      - Review interpreted requirements: guides/review-interpreted-requirements.md
+      - Resolve clarifications: guides/resolve-clarifications.md
+      - Assess a requirement: guides/assess-requirement.md
+      - Understand and resolve gaps: guides/resolve-gaps.md
+      - Track Readiness: guides/track-readiness.md
   - Reference:
       - Overview: reference/index.md
+      - States and enums: reference/states-enums.md
+      - Requirement model: reference/requirement-model.md
+      - Readiness: reference/readiness.md
+      - API v0: reference/api-v0.md
+      - Errors: reference/errors.md
   - Product:
       - What we're building: product/roadmap.md
