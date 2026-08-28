@@ -139,10 +139,13 @@ Responde:
 
 > **Existe algo que ainda impede minha empresa de avançar?**
 
-!!! note "Em desenvolvimento — experiência do produto"
-    O motor atual calcula readiness, mas ainda não possui um estado de domínio `Ready`. A definição e as regras finais desse estado ainda serão implementadas e validadas.
+!!! note "Em desenvolvimento — estado de domínio"
+    O motor de avaliação atual calcula readiness, mas ainda não possui um estado de domínio `Ready` derivado das avaliações e bloqueios. A definição e as regras finais desse estado ainda serão implementadas e validadas.
 
-Conceitualmente, queremos que **Ready** signifique que tudo que se aplica e precisa ser resolvido foi resolvido — e não simplesmente que um número atingiu determinado percentual.
+!!! warning "Existe um `READY` na API de produto — com outro significado"
+    A jornada `/v0/product/analyses` já expõe `ProductAnalysisState.READY`. Nesse contrato, `READY` significa somente que **não há esclarecimentos de interpretação pendentes**. Esse estado não é calculado pela readiness e não significa que todos os requisitos estejam atendidos.
+
+Conceitualmente, queremos que **Ready** signifique que tudo que se aplica e precisa ser resolvido foi resolvido — e não simplesmente que um número atingiu determinado percentual ou que as perguntas de interpretação terminaram.
 
 ---
 
