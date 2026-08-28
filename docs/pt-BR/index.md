@@ -2,7 +2,7 @@
 
 ## Saiba o que falta para sua empresa estar pronta para um novo cliente.
 
-Transforme exigências de cadastro e homologação em um plano claro. Entenda o que é necessário, identifique o que já está resolvido e saiba exatamente o que ainda precisa ser feito.
+Transforme exigências de cadastro e homologação em um caminho claro. Comece entendendo com precisão o que o cliente pediu e avance até saber o que sua empresa já atende e o que ainda precisa resolver.
 
 [Comece por aqui](getting-started/index.md){ .md-button .md-button--primary }
 [Entenda o produto](concepts/index.md){ .md-button }
@@ -11,11 +11,11 @@ Transforme exigências de cadastro e homologação em um plano claro. Entenda o 
 
 ## Homologar um novo cliente não deveria virar uma corrida contra o tempo.
 
-As exigências chegam em documentos, e-mails, planilhas, checklists e portais. Cada cliente pede informações diferentes, usa termos diferentes e organiza o processo de um jeito diferente.
+As exigências podem chegar em documentos, e-mails, planilhas, checklists e portais. Cada cliente pede informações diferentes, usa termos diferentes e organiza o processo de um jeito diferente.
 
 Antes mesmo de começar a providenciar o que falta, alguém precisa entender o que realmente está sendo pedido.
 
-**Quais documentos são obrigatórios? O que é apenas recomendação? Existe alguma exigência que só se aplica em determinadas situações? O que já temos? O que está vencido? O que ainda precisa ser providenciado?**
+**Quais documentos são obrigatórios? Existe alguma exigência que só se aplica em determinadas situações? O que já temos? O que ainda precisa ser providenciado?**
 
 Esse trabalho normalmente acontece de forma manual, espalhado entre pessoas, arquivos e sistemas — e muitas vezes só fica claro que algo está faltando quando o prazo já está apertado.
 
@@ -23,23 +23,27 @@ Esse trabalho normalmente acontece de forma manual, espalhado entre pessoas, arq
 
 ---
 
-## Das exigências do cliente a um plano claro do que fazer.
+## Das exigências do cliente ao Ready.
 
 ### 1. Traga as exigências do seu cliente
 
-Comece com o que você recebeu: um documento, uma lista de exigências ou um texto com as condições para cadastro e homologação.
+Na primeira experiência do MVP, informe sua empresa pelo CNPJ e cole o texto original com as condições para cadastro ou homologação.
 
 ### 2. Entenda o que realmente está sendo pedido
 
-O Supplier Ready organiza as exigências, identifica o que é obrigatório ou condicional e sinaliza o que precisa de esclarecimento — sempre mantendo a conexão com a fonte original.
+O Supplier Ready organiza as exigências em requisitos, preserva condições e incertezas e mantém cada interpretação ligada ao trecho correspondente da fonte.
 
-### 3. Compare com a realidade da sua empresa
+### 3. Esclareça o que depende de contexto
 
-Informe o que sua empresa já possui e acompanhe quais exigências estão atendidas, quais precisam de atenção e quais ainda dependem de alguma ação.
+Quando uma condição não permite determinar com segurança se um requisito se aplica, o Supplier Ready mantém a dúvida explícita e permite resolvê-la antes de seguir.
 
-### 4. Saiba o que falta para estar pronto
+### 4. Compare com a realidade da sua empresa
 
-O Supplier Ready transforma tudo isso em uma visão clara do quanto sua empresa está preparada — sua **readiness** — mostrando o que já está resolvido e o que precisa ser feito para avançar com o novo cliente.
+A próxima camada do produto conecta os requisitos interpretados às informações e evidências da sua empresa para determinar o que está atendido e o que ainda exige ação.
+
+### 5. Acompanhe o que falta para estar pronto
+
+O motor já possui o cálculo determinístico de **readiness** a partir das avaliações dos requisitos. A experiência integrada de avaliação, gaps e readiness continua em desenvolvimento.
 
 ---
 
@@ -62,27 +66,37 @@ A IA ajuda a interpretar. A fonte continua sendo a verdade.
 
 ---
 
-## Seu cliente pode falar outro idioma. O Supplier Ready fala o seu.
+## Seu cliente pode falar outro idioma. O Supplier Ready também deve falar o seu.
 
-O Supplier Ready nasce em português, inglês e espanhol. As exigências podem chegar em um idioma enquanto você acompanha a análise em outro.
+O produto e sua documentação estão sendo preparados desde o início para português, inglês e espanhol.
 
-**A fonte continua original.**  
-Cada evidência permanece no idioma em que foi recebida, preservando exatamente o que seu cliente informou.
+Nossa direção é permitir que exigências recebidas em um idioma sejam trabalhadas em outro sem perder a fonte original nem sua rastreabilidade.
 
-**A explicação chega no seu idioma.**  
-Requisitos, condições e esclarecimentos podem ser apresentados no idioma escolhido por você.
-
-**O idioma muda. A rastreabilidade não.**
+!!! note "Direção de produto"
+    A documentação já possui versões em português, inglês e espanhol. A experiência multilíngue de ponta a ponta do produto ainda deve ser tratada como direção em desenvolvimento, não como capacidade completa do MVP atual.
 
 ---
 
-## Estamos construindo o Supplier Ready.
+## O que já funciona no MVP
 
-O Supplier Ready está em desenvolvimento e estamos começando pelo problema que sustenta todo o restante: **entender com confiança o que um novo cliente está exigindo da sua empresa.**
+A primeira jornada utilizável já consegue:
 
-Nossa primeira versão está sendo construída para transformar exigências recebidas em requisitos claros, rastreáveis e acionáveis — e, a partir deles, mostrar o que sua empresa já atende e o que ainda precisa resolver.
+- receber CNPJ e texto das exigências;
+- criar e processar uma análise;
+- interpretar requisitos com IA;
+- preservar o trecho e a posição da fonte associados a cada requisito;
+- manter incertezas explícitas;
+- pedir esclarecimentos para condições de aplicabilidade;
+- atualizar a aplicabilidade após respostas Sim/Não;
+- apresentar os requisitos interpretados quando não existem esclarecimentos pendentes.
 
-### Começamos pelo essencial
+Ela ainda **não avalia automaticamente se sua empresa possui os documentos ou evidências necessários**.
+
+---
+
+## Estamos construindo o Supplier Ready em camadas.
+
+Depois de entender com confiança o que um novo cliente está exigindo, o produto avança para conectar essas exigências à realidade da empresa.
 
 **Entender as exigências**  
 O que o cliente realmente pediu?
@@ -100,26 +114,28 @@ O que falta, o que precisa de atenção e o que precisa ser esclarecido?
 ↓
 
 **Chegar ao Ready**  
-Sua empresa sabe exatamente o que precisa fazer para avançar.
+Existe algo que ainda impede sua empresa de avançar?
 
-### O objetivo é simples: chegar ao Ready.
+### Readiness e Ready são coisas diferentes
 
-**Ready** não significa apenas ter documentos.
+**Readiness** é a medida determinística de progresso que já existe no motor.
 
-Significa saber quais exigências se aplicam à sua empresa, quais já foram atendidas, quais ainda precisam de ação e quais dependem de esclarecimento.
+**Ready** é o estado final de produto que ainda estamos definindo e implementando sobre avaliações, gaps e bloqueios.
 
-Quando tudo que precisa ser resolvido estiver resolvido, sua empresa está **Ready** para avançar com aquele cliente.
+!!! warning "Não confunda com ProductAnalysisState.READY"
+    A API da jornada de interpretação usa atualmente `READY` quando não existem esclarecimentos pendentes. Esse é um estado técnico daquela etapa e **não significa que a empresa esteja Ready para homologação**.
 
 !!! note "Produto em desenvolvimento"
-    Estamos construindo e validando as primeiras capacidades do Supplier Ready. Algumas experiências apresentadas nesta documentação representam a direção do produto e podem evoluir conforme aprendemos com os primeiros usos.
+    Algumas capacidades já existem na primeira jornada web ou no motor; outras representam a direção do produto. A documentação indica essa diferença para não apresentar intenção futura como contrato atual.
 
 ---
 
 ## Continue pela documentação
 
-Se esta é sua primeira visita, comece entendendo o fluxo do Supplier Ready. Para acompanhar a direção do produto, veja também o que estamos construindo.
+Se esta é sua primeira visita, comece entendendo a jornada que já existe. Para contratos técnicos, consulte a Referência. Para acompanhar a direção do produto, veja também o que estamos construindo.
 
 [Primeiros passos](getting-started/index.md){ .md-button .md-button--primary }
+[API v0](reference/api-v0.md){ .md-button }
 [O que estamos construindo](product/roadmap.md){ .md-button }
 
 ---
