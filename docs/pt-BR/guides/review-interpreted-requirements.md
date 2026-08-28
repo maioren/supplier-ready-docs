@@ -5,17 +5,19 @@
 Depois que uma fonte é processada pelo Interpreter, o Supplier Ready produz requisitos estruturados. Revisar esse resultado significa conferir **o que foi identificado, como foi classificado, quais condições foram preservadas e qual evidência sustenta cada interpretação**.
 
 !!! info "Disponível no MVP"
-    O modelo e o Interpreter já produzem requisitos estruturados no motor. Essa capacidade ainda não está exposta como uma experiência pública completa na API/UI atual.
+    A jornada de produto já cria e processa uma análise, resolve esclarecimentos de aplicabilidade e apresenta os requisitos interpretados com rastreabilidade até a fonte. O contrato completo do `RequirementCandidate` contém campos adicionais que permanecem disponíveis na camada de domínio.
 
 ## 1. Comece pelo nome do requisito
 
-Confira se `name` representa de forma fiel a exigência identificada. O campo `canonical_name`, quando presente, oferece uma forma normalizada de representar o mesmo conceito.
+Confira se `name` representa de forma fiel a exigência identificada.
+
+No contrato completo do Interpreter, `canonical_name`, quando presente, oferece uma forma normalizada de representar o mesmo conceito. A resposta atual da jornada `/v0/product/analyses` apresenta `name`, mas não expõe `canonical_name`.
 
 A normalização não deve mudar aquilo que o cliente pediu.
 
 ## 2. Revise categoria e tipo
 
-Cada requisito pode receber uma `category` e um `type`.
+Cada requisito apresentado pela jornada de produto possui uma `category` e um `type`.
 
 As categorias atuais incluem, entre outras, CORPORATE, TAX, LABOR, FINANCIAL, TECHNICAL, LICENSING, BANKING, COMPLIANCE, DECLARATION e IDENTITY.
 
@@ -23,11 +25,11 @@ Os tipos atuais incluem DOCUMENT, DATA, DECLARATION, CERTIFICATION, POLICY, ACCE
 
 Esses campos ajudam a organizar a análise; eles não substituem a evidência da fonte.
 
-## 3. Confira obrigatoriedade e condição
+## 3. Confira a condição
 
-O resultado informa `mandatory`, `conditional` e, quando necessário, `condition`.
+A resposta da jornada de produto informa `condition` quando o requisito depende de uma condição.
 
-Se `conditional` for verdadeiro, o modelo exige uma condição não vazia. Se o requisito não for condicional, `condition` deve permanecer ausente.
+No contrato completo do `RequirementCandidate`, essa relação é representada também por `conditional`: quando `conditional` é verdadeiro, o modelo exige uma condição não vazia; quando é falso, `condition` deve ser `null`.
 
 Uma condição relevante nunca deve desaparecer apenas para simplificar a interpretação.
 
@@ -39,33 +41,44 @@ A aplicabilidade pode ser:
 - `NOT_APPLICABLE` — sabemos que não se aplica;
 - `UNKNOWN` — ainda falta informação para decidir.
 
-`UNKNOWN` é um estado válido. Quando a aplicabilidade depende de contexto que ainda não possuímos, a próxima ação pode ser um esclarecimento.
+Na jornada de produto, requisitos condicionais podem permanecer `UNKNOWN` enquanto houver um esclarecimento pendente. Depois da resposta, sua aplicabilidade é atualizada para `APPLICABLE` ou `NOT_APPLICABLE`.
 
-## 5. Volte à evidência
+`UNKNOWN` é um estado válido e não deve ser tratado como `NOT_APPLICABLE`.
 
-Cada requisito interpretado possui `source_quote`.
+## 5. Volte à evidência e à posição na fonte
 
-Use esse trecho para responder:
+Cada requisito apresentado pela jornada possui:
+
+- `source_quote` — trecho da fonte que sustenta a interpretação;
+- `source_start` — posição inicial desse trecho;
+- `source_end` — posição final.
+
+Use esses dados para responder:
 
 > **A fonte realmente sustenta a interpretação apresentada?**
 
 A evidência deve permitir verificar a conclusão; não serve apenas como uma citação decorativa.
 
-## 6. Trate confiança como sinal, não como verdade
+## 6. Entenda os campos que pertencem ao contrato completo
 
-`confidence` varia de 0 a 1 e representa um sinal da interpretação do modelo.
+O `RequirementCandidate` usado internamente pelo Interpreter contém informações adicionais, entre elas `canonical_name`, `mandatory`, `blocking`, `conditional`, `issuer` e `confidence`.
 
-Uma confiança alta não transforma uma inferência sem evidência em fato. Quando confiança e evidência apontarem em direções diferentes, a fonte deve prevalecer.
+Esses campos fazem parte do modelo de domínio atual, mas não são todos projetados na resposta `RequirementView` da jornada de produto.
 
-## 7. Procure incertezas, esclarecimentos e avisos
+Por isso, ao revisar a experiência atual, não presuma que todo campo do modelo interno esteja disponível na interface pública correspondente.
 
-Além de `requirements`, o resultado do Interpreter pode conter:
+[Consultar Modelo de requisito →](../reference/requirement-model.md)
+
+## 7. Procure incertezas e esclarecimentos pendentes
+
+A resposta da jornada de produto também apresenta:
 
 - `uncertainties` — ambiguidades, contexto ausente ou detalhes sem suporte;
-- `clarifications` — perguntas que podem ser necessárias para continuar;
-- `warnings` — alertas produzidos durante a interpretação.
+- `pending_clarifications` — perguntas de aplicabilidade que ainda precisam de resposta.
 
-Uma revisão não está completa se olhar apenas para a lista de requisitos e ignorar esses sinais.
+O `InterpreterResult` completo possui ainda `clarifications` e `warnings`, mas esses campos não são projetados diretamente em `ProductAnalysisResultResponse`.
+
+Uma revisão não está completa se olhar apenas para a lista de requisitos e ignorar os sinais que continuam pendentes.
 
 ## Resultado esperado
 
@@ -74,7 +87,7 @@ Ao terminar a revisão, você deve conseguir responder para cada requisito:
 **O que foi interpretado?**  
 **Existe uma condição?**  
 **Sabemos se se aplica?**  
-**Qual evidência sustenta a conclusão?**  
-**Existe alguma incerteza que ainda precisa ser resolvida?**
+**Qual trecho da fonte sustenta a conclusão?**  
+**Existe alguma incerteza ou esclarecimento que ainda precisa ser resolvido?**
 
 [Resolver esclarecimentos →](resolve-clarifications.md){ .md-button .md-button--primary }
