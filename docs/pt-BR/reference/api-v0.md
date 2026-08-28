@@ -2,33 +2,49 @@
 
 ## Contrato HTTP atualmente exposto pela aplicação.
 
-A API `v0` reúne os endpoints HTTP registrados hoje pelo Supplier Ready.
+A API `v0` documentada aqui corresponde às rotas realmente registradas na aplicação atual do Supplier Ready.
 
-Esta referência descreve apenas rotas realmente incluídas na aplicação atual. Capacidades existentes internamente no domínio ou no orchestrator, mas que ainda não possuem rota HTTP registrada, ficam fora desta página.
+> **Se não existe rota registrada, não existe endpoint documentado.**
 
-!!! note "Estado atual"
-    A aplicação se identifica como **Supplier Ready `0.1.0`** e registra atualmente os routers de `analyses` e `clarifications`.
+A aplicação se identifica como **Supplier Ready `0.1.0`** e registra hoje quatro superfícies HTTP relevantes para a `v0`: análises de baixo nível, esclarecimentos de baixo nível, jornada de produto e telemetria de funil.
 
 ---
 
 ## Visão geral
 
+### Jornada de produto
+
 | Método | Endpoint | Finalidade |
 | --- | --- | --- |
-| `POST` | `/v0/analyses` | Criar uma análise. |
-| `POST` | `/v0/analyses/{analysis_id}/clarifications/plan` | Planejar esclarecimentos a partir de um resultado do Interpreter. |
-| `GET` | `/v0/analyses/{analysis_id}/clarifications` | Listar esclarecimentos de uma análise. |
+| `POST` | `/v0/product/analyses` | Criar **e processar** uma análise em uma única operação. |
+| `GET` | `/v0/product/analyses/{analysis_id}` | Consultar o resultado processado da jornada de produto. |
+| `POST` | `/v0/product/analyses/{analysis_id}/clarifications/{clarification_id}/answer` | Responder um esclarecimento e receber o resultado atualizado. |
+
+### Contratos de baixo nível
+
+| Método | Endpoint | Finalidade |
+| --- | --- | --- |
+| `POST` | `/v0/analyses` | Criar uma análise sem executar o Interpreter. |
+| `POST` | `/v0/analyses/{analysis_id}/clarifications/plan` | Planejar esclarecimentos a partir de um `InterpreterResult` fornecido pelo cliente da API. |
+| `GET` | `/v0/analyses/{analysis_id}/clarifications` | Listar esclarecimentos planejados. |
 | `POST` | `/v0/analyses/{analysis_id}/clarifications/{clarification_id}/answer` | Responder um esclarecimento. |
 
-Não existem, no router HTTP atual, endpoints públicos para executar o Interpreter, calcular Readiness, gerar Summary, consultar Source Trace ou obter a Truth Projection.
+### Telemetria
+
+| Método | Endpoint | Finalidade |
+| --- | --- | --- |
+| `POST` | `/v0/telemetry/funnel` | Registrar um evento do funil de uso. |
+
+!!! note "Duas superfícies de análise"
+    `/v0/analyses` representa o contrato de baixo nível: cria e registra a fonte. Já `/v0/product/analyses` executa a jornada integrada atual: cria a análise, processa o texto pelo Interpreter e retorna uma visão pronta para a experiência de produto.
 
 ---
 
-# Análises
+# Jornada de produto
 
-## `POST /v0/analyses`
+## `POST /v0/product/analyses`
 
-Cria uma nova análise a partir do CNPJ da empresa e de uma fonte textual com as exigências.
+Cria a análise, executa o Requirement Interpreter, planeja os esclarecimentos necessários, resolve a rastreabilidade dos requisitos na fonte e devolve o resultado da jornada em uma única chamada.
 
 ### Request
 
@@ -42,223 +58,136 @@ Cria uma nova análise a partir do CNPJ da empresa e de uma fonte textual com as
 | Campo | Tipo | Obrigatório | Regra |
 | --- | --- | :---: | --- |
 | `cnpj` | `string` | sim | CNPJ válido com 14 dígitos ou máscara padrão. |
-| `requirements_text` | `string` | sim | Deve conter conteúdo significativo e respeitar o limite configurado da fonte. |
+| `requirements_text` | `string` | sim | Texto não vazio e dentro do limite configurado da fonte. |
 
-!!! warning "CNPJ ilustrativo"
-    O CNPJ acima demonstra apenas o formato do payload. Uma requisição real precisa usar um CNPJ válido.
-
-### Normalização do CNPJ
-
-O serviço aceita:
-
-```text
-123456780001XX
-```
-
-ou:
-
-```text
-12.345.678/0001-XX
-```
-
-quando os dígitos representam um CNPJ válido.
-
-A resposta utiliza a máscara padrão.
+O modelo rejeita campos extras.
 
 ### Response — `201 Created`
+
+Retorna `ProductAnalysisResultResponse`:
 
 ```json
 {
   "analysis_id": "<uuid>",
   "cnpj": "<cnpj-normalizado>",
-  "status": "RECEIVED"
-}
-```
-
-| Campo | Tipo | Descrição |
-| --- | --- | --- |
-| `analysis_id` | `UUID` | Identificador criado para a análise. |
-| `cnpj` | `string` | CNPJ normalizado. |
-| `status` | `AnalysisStatus` | Estado inicial da análise. Atualmente `RECEIVED`. |
-
-### Erros de domínio conhecidos
-
-| HTTP | Código | Condição |
-| ---: | --- | --- |
-| `422` | `INVALID_CNPJ` | CNPJ inválido ou fora dos formatos aceitos. |
-| `422` | `EMPTY_REQUIREMENTS` | Texto sem conteúdo significativo. |
-| `413` | `SOURCE_TOO_LARGE` | Fonte excede o limite configurado. |
-
-Quando `SOURCE_TOO_LARGE` ocorre, `details` contém atualmente:
-
-```json
-{
-  "max_chars": 10000,
-  "actual_chars": 12000
-}
-```
-
-Os números acima são apenas ilustrativos: o limite real é configurável no ambiente.
-
----
-
-# Esclarecimentos
-
-Os endpoints de esclarecimento usam o `analysis_id` no path.
-
-```text
-/v0/analyses/{analysis_id}/clarifications
-```
-
-O `analysis_id` precisa ser um UUID válido e corresponder a uma análise existente.
-
----
-
-## `POST /v0/analyses/{analysis_id}/clarifications/plan`
-
-Planeja perguntas de esclarecimento para requisitos condicionais cuja aplicabilidade ainda é desconhecida.
-
-### Path parameter
-
-| Parâmetro | Tipo | Descrição |
-| --- | --- | --- |
-| `analysis_id` | `UUID` | Identificador da análise existente. |
-
-### Request
-
-O payload é um `InterpreterResultInput` completo:
-
-```json
-{
-  "buyer": {
-    "name": "Cliente Exemplo",
-    "confidence": 0.95
-  },
+  "state": "NEEDS_CLARIFICATION",
   "requirements": [
     {
       "temp_id": "req-1",
       "name": "Registro no conselho profissional",
-      "canonical_name": null,
       "category": "LICENSING",
       "type": "DOCUMENT",
-      "mandatory": true,
-      "blocking": null,
-      "conditional": true,
-      "condition": "quando aplicável",
       "applicability": "UNKNOWN",
-      "issuer": null,
+      "condition": "quando aplicável",
       "source_quote": "quando aplicável, registro no conselho profissional competente",
-      "confidence": 0.92
+      "source_start": 120,
+      "source_end": 184
     }
   ],
   "uncertainties": [],
-  "clarifications": [],
-  "warnings": []
+  "pending_clarifications": []
 }
 ```
 
-!!! warning "Exemplo estrutural"
-    O payload demonstra o contrato. Os valores não representam uma saída garantida do Interpreter para uma fonte específica.
+Os valores acima são apenas ilustrativos.
 
-### `InterpreterResultInput`
+### `ProductAnalysisResultResponse`
 
-| Campo | Tipo | Regra |
+| Campo | Tipo | Descrição |
 | --- | --- | --- |
-| `buyer` | `BuyerCandidateInput` | Obrigatório. |
-| `requirements` | `array<RequirementCandidateInput>` | Obrigatório. |
-| `uncertainties` | `array<UncertaintyInput>` | Opcional no modelo; padrão `[]`. |
-| `clarifications` | `array<string>` | Obrigatório. |
-| `warnings` | `array<string>` | Obrigatório. |
+| `analysis_id` | `UUID` | Identificador da análise. |
+| `cnpj` | `string` | CNPJ normalizado. |
+| `state` | `ProductAnalysisState` | Estado da jornada de produto. |
+| `requirements` | `array<RequirementView>` | Requisitos interpretados na visão exposta ao produto. |
+| `uncertainties` | `array<UncertaintyView>` | Incertezas estruturadas da interpretação. |
+| `pending_clarifications` | `array<ClarificationQuestion>` | Apenas esclarecimentos ainda sem resposta. |
 
-Os modelos de entrada rejeitam campos extras.
+### `RequirementView`
 
-### Critério atual para gerar uma pergunta
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `temp_id` | `string` | Identificador temporário do requisito. |
+| `name` | `string` | Nome interpretado. |
+| `category` | `RequirementCategory` | Categoria do requisito. |
+| `type` | `RequirementType` | Tipo do requisito. |
+| `applicability` | `Applicability` | Aplicabilidade atual. |
+| `condition` | `string \| null` | Condição, quando existente. |
+| `source_quote` | `string` | Trecho da fonte usado na interpretação. |
+| `source_start` | `int` | Índice inicial de `source_quote` no texto original. |
+| `source_end` | `int` | Índice final exclusivo de `source_quote` no texto original. |
 
-Um requisito gera esclarecimento quando todas estas condições são verdadeiras:
+A visão de produto é deliberadamente menor que o `RequirementCandidate` completo. Campos internos como `confidence`, `mandatory`, `blocking`, `canonical_name` e `issuer` não fazem parte de `RequirementView` neste contrato.
+
+### `UncertaintyView`
+
+| Campo | Tipo |
+| --- | --- |
+| `reason` | `UncertaintyReason` |
+| `message` | `string` |
+| `source_quote` | `string` |
+| `requirement_temp_id` | `string \| null` |
+
+### `ProductAnalysisState`
+
+Valores atuais:
 
 ```text
-conditional = true
-applicability = UNKNOWN
-condition contém texto
-não existe pergunta já planejada para requirement_temp_id
+NEEDS_CLARIFICATION
+READY
 ```
 
-A pergunta gerada atualmente usa o formato:
+A regra é objetiva:
 
 ```text
-A condição se aplica ao fornecedor? {condition}
+existe pelo menos um esclarecimento sem resposta
+→ NEEDS_CLARIFICATION
+
+não existe esclarecimento pendente
+→ READY
 ```
 
-### Response — `200 OK`
+!!! warning "`READY` aqui não é a readiness do produto"
+    `ProductAnalysisState.READY` significa apenas que a **etapa atual de interpretação não possui esclarecimentos pendentes**. Ele não resulta do `ReadinessCalculator`, não mede atendimento dos requisitos e não significa que a empresa esteja pronta para o cliente no sentido conceitual de **Ready**.
 
-Retorna uma lista de `ClarificationQuestion`.
-
-```json
-[
-  {
-    "id": "<uuid-da-pergunta>",
-    "analysis_id": "<uuid-da-analise>",
-    "requirement_temp_id": "req-1",
-    "condition": "quando aplicável",
-    "question": "A condição se aplica ao fornecedor? quando aplicável",
-    "answer": null,
-    "resolved_applicability": null
-  }
-]
-```
-
-### `ClarificationQuestion`
-
-| Campo | Tipo | Nulo? |
-| --- | --- | :---: |
-| `id` | `UUID` | não |
-| `analysis_id` | `UUID` | não |
-| `requirement_temp_id` | `string` | não |
-| `condition` | `string` | não |
-| `question` | `string` | não |
-| `answer` | `YES \| NO` | sim |
-| `resolved_applicability` | `Applicability` | sim |
-
-### Erro de domínio conhecido
+### Erros estruturados conhecidos
 
 | HTTP | Código | Condição |
 | ---: | --- | --- |
-| `404` | `ANALYSIS_NOT_FOUND` | O `analysis_id` não corresponde a uma análise existente. |
+| `422` | `INVALID_CNPJ` | CNPJ inválido. |
+| `422` | `EMPTY_REQUIREMENTS` | Texto sem conteúdo significativo. |
+| `413` | `SOURCE_TOO_LARGE` | Fonte acima do limite configurado. |
+| `502` | `INTERPRETER_FAILED` | O Interpreter ou seu provedor não conseguiu produzir um resultado válido. |
 
 ---
 
-## `GET /v0/analyses/{analysis_id}/clarifications`
+## `GET /v0/product/analyses/{analysis_id}`
 
-Lista as perguntas de esclarecimento já planejadas para a análise.
+Retorna a mesma estrutura `ProductAnalysisResultResponse` para uma análise já processada.
 
-### Response — `200 OK`
-
-Retorna:
-
-```text
-array<ClarificationQuestion>
-```
-
-Quando não existem perguntas planejadas, a lista pode ser vazia.
-
-### Erro de domínio conhecido
-
-| HTTP | Código | Condição |
-| ---: | --- | --- |
-| `404` | `ANALYSIS_NOT_FOUND` | A análise não existe. |
-
----
-
-## `POST /v0/analyses/{analysis_id}/clarifications/{clarification_id}/answer`
-
-Responde uma pergunta de esclarecimento existente.
-
-### Path parameters
+### Path parameter
 
 | Parâmetro | Tipo |
 | --- | --- |
 | `analysis_id` | `UUID` |
-| `clarification_id` | `UUID` |
+
+### Response — `200 OK`
+
+```text
+ProductAnalysisResultResponse
+```
+
+### Erros estruturados conhecidos
+
+| HTTP | Código | Condição |
+| ---: | --- | --- |
+| `404` | `ANALYSIS_NOT_FOUND` | A análise não existe. |
+| `409` | `ANALYSIS_NOT_PROCESSED` | A análise existe, mas ainda não possui resultado do Interpreter. |
+
+---
+
+## `POST /v0/product/analyses/{analysis_id}/clarifications/{clarification_id}/answer`
+
+Responde um esclarecimento da jornada de produto e devolve imediatamente o `ProductAnalysisResultResponse` atualizado.
 
 ### Request
 
@@ -275,20 +204,143 @@ YES
 NO
 ```
 
-### Efeito sobre a aplicabilidade
+Efeito atual:
 
 ```text
 YES → APPLICABLE
 NO  → NOT_APPLICABLE
 ```
 
+Depois da resposta, a aplicabilidade do requisito correspondente é atualizada no resultado processado da análise.
+
 ### Response — `200 OK`
+
+```text
+ProductAnalysisResultResponse
+```
+
+Se aquela era a última pergunta pendente, `state` passa de `NEEDS_CLARIFICATION` para `READY`.
+
+### Idempotência
+
+Repetir a mesma resposta é válido. Enviar posteriormente uma resposta diferente gera conflito.
+
+### Erros estruturados conhecidos
+
+| HTTP | Código | Condição |
+| ---: | --- | --- |
+| `404` | `ANALYSIS_NOT_FOUND` | A análise não existe. |
+| `409` | `ANALYSIS_NOT_PROCESSED` | A análise ainda não possui resultado interpretado. |
+| `404` | `CLARIFICATION_NOT_FOUND` | O esclarecimento não pertence à análise ou não existe. |
+| `409` | `CLARIFICATION_CONFLICT` | Já existe resposta diferente para o esclarecimento. |
+
+---
+
+# Contratos de baixo nível
+
+## `POST /v0/analyses`
+
+Cria e armazena uma análise, mas **não executa o Interpreter**.
+
+### Request
+
+```json
+{
+  "cnpj": "12.345.678/0001-XX",
+  "requirements_text": "Texto das exigências recebidas do cliente"
+}
+```
+
+### Response — `201 Created`
+
+```json
+{
+  "analysis_id": "<uuid>",
+  "cnpj": "<cnpj-normalizado>",
+  "status": "RECEIVED"
+}
+```
+
+O CNPJ aceita 14 dígitos ou máscara padrão, precisa ser válido e é devolvido normalizado.
+
+### Erros estruturados conhecidos
+
+| HTTP | Código |
+| ---: | --- |
+| `422` | `INVALID_CNPJ` |
+| `422` | `EMPTY_REQUIREMENTS` |
+| `413` | `SOURCE_TOO_LARGE` |
+
+---
+
+## `POST /v0/analyses/{analysis_id}/clarifications/plan`
+
+Planeja perguntas de esclarecimento a partir de um `InterpreterResultInput` fornecido explicitamente no request.
+
+Este é um contrato de baixo nível. A jornada `/v0/product/analyses` já faz o planejamento internamente depois de executar o Interpreter.
+
+Uma pergunta é criada quando todas as condições abaixo são verdadeiras:
+
+```text
+conditional = true
+applicability = UNKNOWN
+condition contém texto
+não existe pergunta já planejada para requirement_temp_id
+```
+
+### Response — `200 OK`
+
+```text
+array<ClarificationQuestion>
+```
+
+### Erro estruturado conhecido
+
+| HTTP | Código |
+| ---: | --- |
+| `404` | `ANALYSIS_NOT_FOUND` |
+
+---
+
+## `GET /v0/analyses/{analysis_id}/clarifications`
+
+Lista todas as perguntas planejadas para a análise, incluindo perguntas já respondidas.
+
+### Response — `200 OK`
+
+```text
+array<ClarificationQuestion>
+```
+
+### Erro estruturado conhecido
+
+| HTTP | Código |
+| ---: | --- |
+| `404` | `ANALYSIS_NOT_FOUND` |
+
+---
+
+## `POST /v0/analyses/{analysis_id}/clarifications/{clarification_id}/answer`
+
+Responde diretamente uma pergunta de esclarecimento.
+
+### Request
+
+```json
+{
+  "answer": "YES"
+}
+```
+
+### Response — `200 OK`
+
+Retorna `ClarificationAnswerResult`:
 
 ```json
 {
   "clarification": {
-    "id": "<uuid-da-pergunta>",
-    "analysis_id": "<uuid-da-analise>",
+    "id": "<uuid>",
+    "analysis_id": "<uuid>",
     "requirement_temp_id": "req-1",
     "condition": "quando aplicável",
     "question": "A condição se aplica ao fornecedor? quando aplicável",
@@ -299,37 +351,68 @@ NO  → NOT_APPLICABLE
 }
 ```
 
-### Idempotência da resposta
+### Erros estruturados conhecidos
 
-Se a pergunta já foi respondida e a mesma resposta é enviada novamente, a operação devolve o resultado correspondente sem conflito.
+| HTTP | Código |
+| ---: | --- |
+| `404` | `ANALYSIS_NOT_FOUND` |
+| `404` | `CLARIFICATION_NOT_FOUND` |
+| `409` | `CLARIFICATION_CONFLICT` |
 
-Exemplo:
-
-```text
-YES → YES
-```
-
-continua válido.
-
-Se uma resposta diferente for enviada depois que a pergunta já foi resolvida, ocorre conflito:
-
-```text
-YES → NO
-```
-
-### Erros de domínio conhecidos
-
-| HTTP | Código | Condição |
-| ---: | --- | --- |
-| `404` | `ANALYSIS_NOT_FOUND` | A análise não existe. |
-| `404` | `CLARIFICATION_NOT_FOUND` | O esclarecimento não existe para aquela análise. |
-| `409` | `CLARIFICATION_CONFLICT` | O esclarecimento já foi respondido com valor diferente. |
+!!! note "Diferença para a jornada de produto"
+    Neste endpoint de baixo nível, o serviço de esclarecimentos devolve a aplicabilidade resolvida. Na jornada `/v0/product/...`, o orchestrator também atualiza o requisito dentro do `InterpreterResult` armazenado e devolve a visão completa do produto.
 
 ---
 
-# Formato dos erros de domínio
+# Telemetria de funil
 
-Erros gerados como `ApplicationError` seguem este envelope:
+## `POST /v0/telemetry/funnel`
+
+Registra um evento de uso no funil atual.
+
+### Request
+
+```json
+{
+  "name": "analysis_started",
+  "session_id": "<uuid>",
+  "analysis_id": null
+}
+```
+
+| Campo | Tipo | Obrigatório |
+| --- | --- | :---: |
+| `name` | `FunnelEventName` | sim |
+| `session_id` | `UUID` | sim |
+| `analysis_id` | `UUID \| null` | não |
+
+O modelo rejeita campos extras.
+
+### `FunnelEventName`
+
+Valores aceitos atualmente:
+
+```text
+landing_viewed
+analysis_started
+requirement_submitted
+analysis_completed
+result_viewed
+requirement_expanded
+```
+
+### Response — `204 No Content`
+
+A resposta não possui body.
+
+!!! note "Persistência atual"
+    A telemetria de funil é armazenada em memória na implementação atual.
+
+---
+
+# Formato dos erros estruturados
+
+`ApplicationError` é serializado como:
 
 ```json
 {
@@ -341,61 +424,44 @@ Erros gerados como `ApplicationError` seguem este envelope:
 }
 ```
 
-Estrutura:
+Para o catálogo completo, consulte [Erros](errors.md).
 
-| Campo | Tipo |
-| --- | --- |
-| `error.code` | `string` |
-| `error.message` | `string` |
-| `error.details` | `object` |
-
-!!! note "Erros de validação do framework"
-    O envelope acima é específico para `ApplicationError`. Erros de validação de request gerados pelo FastAPI/Pydantic não passam por esse handler e podem usar o formato padrão de validação do framework.
+Erros de validação gerados diretamente pelo FastAPI/Pydantic podem usar o formato padrão do framework em vez desse envelope.
 
 ---
 
 # Autenticação
 
-A aplicação atual não registra mecanismo de autenticação ou autorização nesses routers.
+Os routers registrados atualmente não adicionam mecanismo de autenticação ou autorização.
 
-Isso descreve apenas o contrato presente da `v0`; **não deve ser interpretado como decisão de segurança para uma API pública de produção**.
+Isso descreve o estado presente da `v0` e **não representa uma decisão de segurança para uma API pública de produção**.
 
 ---
 
 # Persistência atual
 
-As análises e perguntas de esclarecimento são mantidas atualmente em memória pelo serviço da aplicação.
+Análises, esclarecimentos, resultados processados e telemetria de funil são mantidos atualmente em memória pelos serviços da aplicação.
 
-Consequências desta implementação do MVP:
-
-- os registros não representam persistência durável;
-- reiniciar o processo pode eliminar o estado mantido em memória;
-- o contrato atual serve para validar o slice funcional, não uma arquitetura final de armazenamento.
+Reiniciar o processo pode eliminar esse estado. A `v0` atual valida o fluxo funcional; não define a arquitetura final de persistência.
 
 ---
 
-# O que não está exposto via HTTP
+# O que ainda não possui endpoint dedicado
 
-O código atual possui capacidades internas adicionais, mas elas não fazem parte da API HTTP registrada hoje.
+Apesar de algumas capacidades participarem internamente da jornada de produto, não existe hoje endpoint HTTP dedicado para:
 
-Entre elas estão:
+- calcular ou consultar `ReadinessResult`;
+- gerar `AnalysisSummary`;
+- consultar o conjunto completo de source traces como recurso próprio;
+- consultar `TruthProjection`.
 
-- execução do `RequirementInterpreter`;
-- consulta do resultado interpretado;
-- cálculo de readiness;
-- summary;
-- source traces;
-- truth projection.
-
-Essas capacidades só devem entrar nesta referência quando uma rota pública correspondente fizer parte efetiva da aplicação.
+O Interpreter também não possui uma rota isolada: sua execução é exposta **indiretamente** por `POST /v0/product/analyses`.
 
 ---
 
-## Regra para esta referência
+## Regra desta referência
 
-> **Se não existe rota registrada, não existe endpoint documentado.**
+> **A documentação acompanha as rotas registradas na aplicação, não apenas as classes disponíveis internamente.**
 
-Isso mantém a documentação da API alinhada ao contrato que realmente pode ser chamado na `v0`.
-
-[Consultar Modelo de requisito](requirement-model.md){ .md-button }
+[Consultar Erros](errors.md){ .md-button .md-button--primary }
 [Consultar Estados e enums](states-enums.md){ .md-button }
