@@ -16,7 +16,7 @@ Elementos planejados, mas ainda não implementados, não são apresentados aqui 
 
 ### Estados e enums
 
-Valores fechados usados atualmente pelo domínio, incluindo estados da análise, tipos de fonte, categorias e tipos de requisito, aplicabilidade, incertezas, esclarecimentos e avaliações.
+Valores fechados usados atualmente pelo domínio e pela API, incluindo estados da análise, jornada de produto, categorias e tipos de requisito, aplicabilidade, incertezas, esclarecimentos, avaliações e eventos de telemetria.
 
 [Consultar Estados e enums →](states-enums.md)
 
@@ -34,13 +34,13 @@ Fórmula, pesos, contadores, estrutura de entrada e saída e regras determiníst
 
 ### API v0
 
-Endpoints HTTP realmente expostos pela aplicação atual, seus contratos de entrada e saída e códigos de resposta.
+Endpoints HTTP realmente expostos pela aplicação atual, incluindo a jornada integrada de produto, contratos de baixo nível e telemetria de funil.
 
 [Consultar API v0 →](api-v0.md)
 
 ### Erros
 
-Códigos de erro públicos do MVP, envelope de erro, status HTTP e distinção em relação aos erros de validação do framework.
+Códigos de erro estruturados atualmente observáveis na `v0` e seus significados.
 
 [Consultar Erros →](errors.md)
 
@@ -52,4 +52,7 @@ A presença de um item nesta seção significa que ele **existe no contrato atua
 
 Quando um contrato público mudar no MVP, sua referência correspondente deve ser atualizada junto com a implementação.
 
-Recursos futuros como evidências completas de atendimento ou novos tipos de fonte ainda não implementados devem permanecer fora desta seção até fazerem parte efetiva do contrato.
+Recursos futuros como um estado de domínio **Ready** derivado das avaliações e bloqueios, evidências completas de atendimento ou novos tipos de fonte devem permanecer fora desta seção até fazerem parte efetiva do contrato.
+
+!!! note "Sobre `ProductAnalysisState.READY`"
+    A API de produto já possui um valor `READY`, documentado em [Estados e enums](states-enums.md). Ele significa que não existem esclarecimentos pendentes na etapa de interpretação e não deve ser confundido com o futuro estado de conclusão baseado em atendimento dos requisitos.
