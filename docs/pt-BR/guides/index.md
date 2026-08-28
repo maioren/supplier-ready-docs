@@ -4,13 +4,13 @@
 
 Os **Guias** são orientados a ações concretas. Eles mostram como realizar uma tarefa quando você já sabe o que precisa fazer — diferente dos [Primeiros passos](../getting-started/index.md), que apresentam o fluxo do produto, e de [Conceitos](../concepts/index.md), que explicam como o Supplier Ready pensa e organiza as informações.
 
-Como o produto ainda está em desenvolvimento, os guias deixam explícito quando uma capacidade já existe no motor do MVP e quando a experiência integrada para o usuário ainda está sendo construída.
+Como o produto ainda está em desenvolvimento, os guias deixam explícito quando uma capacidade já existe no MVP e quando uma parte da experiência ainda está sendo construída.
 
 !!! info "Disponível no MVP"
-    A capacidade já existe e foi validada no motor do Supplier Ready. Isso não significa necessariamente que exista uma interface pública completa para executá-la.
+    A capacidade já pode ser executada pelo motor, pela API ou pela primeira experiência web, conforme indicado no próprio guia.
 
 !!! note "Em desenvolvimento — experiência do produto"
-    A tarefa faz parte do fluxo do produto, mas sua experiência integrada ainda está sendo construída e pode evoluir antes da disponibilização ao usuário.
+    A tarefa faz parte do fluxo do produto, mas ainda não está disponível de ponta a ponta com o contrato e a experiência pretendidos.
 
 ---
 
@@ -20,19 +20,19 @@ Como o produto ainda está em desenvolvimento, os guias deixam explícito quando
 
 !!! info "Disponível no MVP"
 
-Registre a empresa e a fonte textual com as exigências recebidas do cliente.
+Registre a empresa e a fonte textual com as exigências recebidas do cliente. A jornada de produto já cria e processa essa análise de forma integrada.
 
 ### [Revisar requisitos interpretados](review-interpreted-requirements.md)
 
 !!! info "Disponível no MVP"
 
-Revise requisitos, categorias, tipos, condições, aplicabilidade, confiança, evidências e incertezas produzidas pelo Interpreter.
+Revise os requisitos apresentados pela jornada de produto, suas condições, aplicabilidade, incertezas e rastreabilidade até a fonte; consulte a Referência para os campos adicionais do modelo de domínio.
 
 ### [Resolver esclarecimentos](resolve-clarifications.md)
 
 !!! info "Disponível no MVP"
 
-Resolva condições cuja aplicabilidade ainda é desconhecida sem transformar suposições em fatos.
+Resolva condições cuja aplicabilidade ainda é desconhecida sem transformar suposições em fatos. A primeira experiência web já apresenta esse fluxo com respostas Sim/Não.
 
 ### [Avaliar um requisito](assess-requirement.md)
 
@@ -48,9 +48,9 @@ Transforme pendências, dúvidas e requisitos faltantes em próximas decisões e
 
 ### [Acompanhar a Readiness](track-readiness.md)
 
-!!! info "Disponível no MVP"
+!!! info "Disponível no MVP — motor"
 
-Leia o score determinístico junto com seus contadores e pendências, sem confundi-lo com probabilidade de aprovação.
+Leia o score determinístico junto com seus contadores e pendências. O cálculo existe no motor, mas ainda não está exposto na jornada web/API de produto.
 
 ---
 
