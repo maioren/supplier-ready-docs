@@ -38,7 +38,18 @@ nav:
       - Readiness: concepts/readiness.md
   - Guías:
       - Visión general: guides/index.md
+      - Crear un análisis: guides/create-analysis.md
+      - Revisar requisitos interpretados: guides/review-interpreted-requirements.md
+      - Resolver aclaraciones: guides/resolve-clarifications.md
+      - Evaluar un requisito: guides/assess-requirement.md
+      - Entender y resolver gaps: guides/resolve-gaps.md
+      - Acompañar Readiness: guides/track-readiness.md
   - Referencia:
       - Visión general: reference/index.md
+      - Estados y enums: reference/states-enums.md
+      - Modelo de requisito: reference/requirement-model.md
+      - Readiness: reference/readiness.md
+      - API v0: reference/api-v0.md
+      - Errores: reference/errors.md
   - Producto:
       - Lo que estamos construyendo: product/roadmap.md
