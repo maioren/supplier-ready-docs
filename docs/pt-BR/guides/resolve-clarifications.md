@@ -7,7 +7,7 @@ Esclarecimentos existem para situações em que o Supplier Ready identifica um r
 > **Quando não souber, o Supplier Ready não deve adivinhar. Deve perguntar.**
 
 !!! info "Disponível no MVP"
-    O MVP já consegue planejar, listar e responder esclarecimentos. A experiência visual integrada ainda está em desenvolvimento.
+    A jornada de produto já consegue criar uma análise, apresentar esclarecimentos pendentes, registrar respostas e devolver a análise atualizada. Os endpoints de baixo nível de esclarecimento também permanecem disponíveis na `v0`.
 
 ## 1. Entenda quando uma pergunta é criada
 
@@ -21,20 +21,20 @@ Cada esclarecimento mantém a referência ao requisito, a condição original e 
 
 Antes de responder, confirme que você entendeu **qual condição está sendo avaliada**. A resposta não altera o texto original do cliente; ela adiciona contexto à análise.
 
-## 3. Responda YES ou NO
+## 3. Responda Sim ou Não
 
-O contrato atual aceita duas respostas:
+Na experiência do produto, as opções apresentadas ao usuário são **Sim** e **Não**. No contrato HTTP, elas são representadas pelos valores:
 
 - `YES` — a condição se aplica;
 - `NO` — a condição não se aplica.
 
 A resposta resolve a aplicabilidade para `APPLICABLE` ou `NOT_APPLICABLE`, respectivamente.
 
-Na API atual, a operação é:
+Na jornada de produto, a operação é:
 
-`POST /v0/analyses/{analysis_id}/clarifications/{clarification_id}/answer`
+`POST /v0/product/analyses/{analysis_id}/clarifications/{clarification_id}/answer`
 
-com uma resposta no formato:
+com payload:
 
 ```json
 {
@@ -42,23 +42,33 @@ com uma resposta no formato:
 }
 ```
 
-## 4. Confirme a aplicabilidade resolvida
+A resposta devolve a análise de produto atualizada.
 
-Depois da resposta, o resultado informa o esclarecimento atualizado e a aplicabilidade resolvida.
+!!! note "Contrato de baixo nível"
+    A `v0` também mantém `POST /v0/analyses/{analysis_id}/clarifications/{clarification_id}/answer`, que retorna o resultado específico do esclarecimento. Consulte [API v0](../reference/api-v0.md) para os dois contratos.
+
+## 4. Observe o estado da jornada
+
+A resposta integrada usa `ProductAnalysisState`:
+
+- `NEEDS_CLARIFICATION` — ainda existe pelo menos uma pergunta sem resposta;
+- `READY` — não existem esclarecimentos pendentes.
+
+!!! warning "READY nesta resposta não é o Ready final do produto"
+    `ProductAnalysisState.READY` significa apenas que a **interpretação pode prosseguir sem esclarecimentos pendentes**. Não significa que todos os requisitos estejam atendidos, que a readiness seja 100% ou que a empresa esteja pronta para homologação.
+
+Quando ainda existem perguntas, `pending_clarifications` contém apenas as não respondidas. Quando a última pergunta é resolvida, a jornada passa a apresentar o resultado interpretado.
+
+## 5. Confirme a aplicabilidade resolvida
+
+No orquestrador, responder `YES` atualiza o requisito correspondente para `APPLICABLE`; responder `NO` atualiza para `NOT_APPLICABLE`.
 
 Responder novamente com o mesmo valor é idempotente. Tentar alterar uma resposta já registrada para o valor oposto gera `CLARIFICATION_CONFLICT`.
 
 Se a análise ou o esclarecimento não existir, o MVP retorna os erros de domínio correspondentes.
 
-## 5. Reavalie o requisito
-
-No orquestrador do motor, a resposta atualiza a aplicabilidade do requisito correspondente. Isso permite que as próximas etapas deixem de tratar aquela condição como desconhecida.
-
-!!! note "Experiência integrada"
-    A API pública atual expõe as operações de esclarecimento, enquanto a reavaliação integrada de toda a análise ainda está sendo consolidada como experiência de produto.
-
 ## Resultado esperado
 
-Ao concluir um esclarecimento, uma condição antes desconhecida passa a ter uma decisão explícita de aplicabilidade, sem transformar uma suposição da IA em fato.
+Ao concluir os esclarecimentos necessários, condições antes desconhecidas passam a ter decisões explícitas de aplicabilidade e a interpretação pode ser apresentada sem perguntas pendentes — sem transformar uma suposição da IA em fato.
 
-[Acompanhar a Readiness →](track-readiness.md){ .md-button .md-button--primary }
+[Revisar requisitos interpretados →](review-interpreted-requirements.md){ .md-button .md-button--primary }
