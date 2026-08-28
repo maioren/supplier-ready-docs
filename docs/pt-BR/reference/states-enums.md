@@ -1,10 +1,10 @@
 # Estados e enums
 
-## Valores fechados do domínio atual.
+## Valores fechados do contrato atual.
 
-Esta página lista os estados e enums implementados atualmente no Supplier Ready `v0`.
+Esta página lista os estados e enums implementados atualmente no Supplier Ready `v0`, incluindo valores do domínio e valores expostos pela API de produto.
 
-Os valores são apresentados exatamente como aparecem no contrato do domínio.
+Os valores são apresentados exatamente como aparecem no contrato atual.
 
 ---
 
@@ -12,13 +12,13 @@ Os valores são apresentados exatamente como aparecem no contrato do domínio.
 
 ### `AnalysisStatus`
 
-Estado atual de uma análise.
+Estado interno da análise registrada.
 
 | Valor | Significado |
 | --- | --- |
 | `RECEIVED` | A análise foi criada e sua fonte foi recebida. |
 
-Atualmente, `RECEIVED` é o único estado implementado para uma análise.
+Atualmente, `RECEIVED` é o único estado implementado em `AnalysisStatus`.
 
 ### `RequirementSourceType`
 
@@ -29,6 +29,24 @@ Tipo da fonte associada à análise.
 | `TEXT` | Fonte fornecida como conteúdo textual. |
 
 `TEXT` é o único tipo de fonte suportado pelo domínio atual.
+
+---
+
+## Estado da jornada de produto
+
+### `ProductAnalysisState`
+
+Estado exposto por `/v0/product/analyses`.
+
+| Valor | Significado atual |
+| --- | --- |
+| `NEEDS_CLARIFICATION` | Existe pelo menos um esclarecimento ainda sem resposta. |
+| `READY` | Não existe esclarecimento pendente na etapa atual de interpretação. |
+
+!!! warning "`READY` não é Readiness"
+    `ProductAnalysisState.READY` não resulta do cálculo de readiness e não afirma que a empresa atende todas as exigências do cliente. Ele significa somente que a jornada de interpretação atual não possui perguntas de esclarecimento pendentes.
+
+Esse estado de API é diferente do conceito de produto **Ready** descrito em [Readiness](../concepts/readiness.md), cuja definição final ainda não existe como estado de domínio do motor de avaliação.
 
 ---
 
@@ -81,7 +99,7 @@ Indica se um requisito se aplica à empresa analisada.
 | `NOT_APPLICABLE` | O requisito não se aplica. |
 | `UNKNOWN` | Ainda não há informação suficiente para determinar a aplicabilidade. |
 
-`UNKNOWN` é um estado válido do domínio e não deve ser convertido automaticamente em `APPLICABLE` ou `NOT_APPLICABLE`.
+`UNKNOWN` é um estado válido e não deve ser convertido automaticamente em `APPLICABLE` ou `NOT_APPLICABLE`.
 
 ---
 
@@ -98,8 +116,6 @@ Motivo estruturado para uma incerteza registrada pelo Interpreter.
 | `UNSUPPORTED_DETAIL` | Um detalhe não possui suporte suficiente na fonte. |
 | `OTHER` | Outro motivo de incerteza. |
 
-Uma incerteza também possui uma mensagem, um trecho da fonte e pode estar associada a um requisito candidato específico.
-
 ---
 
 ## Esclarecimentos
@@ -112,8 +128,6 @@ Respostas aceitas atualmente por uma pergunta de esclarecimento.
 | --- | --- |
 | `YES` | Resolve para `APPLICABLE`. |
 | `NO` | Resolve para `NOT_APPLICABLE`. |
-
-O contrato atual aceita apenas respostas binárias `YES` e `NO`.
 
 ---
 
@@ -131,22 +145,38 @@ Representa a situação de atendimento de um requisito durante o cálculo de rea
 | `UNKNOWN` | Situação de atendimento ainda desconhecida. | `0.0` |
 | `NOT_APPLICABLE` | Requisito não aplicável. | excluído |
 
-O peso listado corresponde à implementação atual do cálculo de readiness. Um item também é excluído quando sua `Applicability` é `NOT_APPLICABLE`.
-
-Se a `Applicability` for `UNKNOWN`, o item permanece como pendência de aplicabilidade e ainda não entra no score.
+Um item também é excluído quando sua `Applicability` é `NOT_APPLICABLE`. Se a aplicabilidade for `UNKNOWN`, ele fica pendente e ainda não entra no score.
 
 ---
 
-## Valores que ainda não existem no contrato
+## Telemetria de funil
 
-Alguns conceitos usados na documentação de produto ainda não são enums ou estados implementados na `v0`.
+### `FunnelEventName`
+
+Eventos aceitos pelo endpoint `/v0/telemetry/funnel`.
+
+| Valor |
+| --- |
+| `landing_viewed` |
+| `analysis_started` |
+| `requirement_submitted` |
+| `analysis_completed` |
+| `result_viewed` |
+| `requirement_expanded` |
+
+---
+
+## Valores que ainda não existem como estado de domínio
+
+Alguns conceitos usados no produto ainda não existem como estados formais do motor de avaliação.
 
 Entre eles:
 
-- `Ready` como estado de domínio;
+- `Ready` como conclusão derivada das avaliações e bloqueios;
 - estados formais de gap;
 - tipos adicionais de fonte como PDF, planilha ou e-mail.
 
-Eles não devem ser tratados como valores válidos da API ou do domínio atual até serem implementados.
+A existência de `ProductAnalysisState.READY` **não altera essa distinção**: esse valor pertence à jornada de interpretação da API de produto e possui semântica mais restrita.
 
+[Consultar API v0](api-v0.md){ .md-button }
 [Voltar para Referência](index.md){ .md-button }
