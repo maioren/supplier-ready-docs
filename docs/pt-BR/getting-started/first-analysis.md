@@ -7,7 +7,7 @@ Toda análise no Supplier Ready parte de uma fonte: aquilo que seu cliente efeti
 Nesta primeira experiência, vamos acompanhar como esse conteúdo deixa de ser apenas texto e passa a se tornar uma estrutura de requisitos que pode ser analisada com rastreabilidade.
 
 !!! info "Disponível no MVP"
-    O motor atual já permite criar uma análise a partir do CNPJ da empresa e do texto com as exigências recebidas, interpretar requisitos, preservar evidências da fonte, tratar esclarecimentos e calcular readiness. A experiência visual integrada para realizar todo esse fluxo ainda está sendo construída.
+    A primeira experiência web já permite informar o CNPJ, colar o texto das exigências, executar a interpretação, responder esclarecimentos de aplicabilidade e revisar os requisitos com rastreabilidade até a fonte. A avaliação da realidade da empresa e a readiness integrada permanecem como próximas etapas do produto.
 
 ## Um exemplo para acompanhar
 
@@ -25,14 +25,13 @@ Imagine que seu cliente tenha enviado a seguinte exigência:
 
 A análise começa com a identificação da sua empresa e o conteúdo recebido do cliente.
 
+Na primeira experiência web, você informa o CNPJ da empresa e cola o texto original das exigências antes de iniciar a análise.
+
 O texto original é a referência para determinar o que foi efetivamente solicitado. Ele não deve ser substituído silenciosamente por uma interpretação da IA.
 
 No exemplo, a fonte continua sendo:
 
 > A empresa deverá apresentar comprovante de inscrição no CNPJ válido e, quando aplicável, registro no conselho profissional competente.
-
-!!! note "Em desenvolvimento — experiência do produto"
-    A interface que permitirá criar e acompanhar uma análise de ponta a ponta ainda está sendo construída. Por isso, esta documentação descreve o comportamento do produto sem presumir botões ou telas que ainda não existem.
 
 ---
 
@@ -40,7 +39,7 @@ No exemplo, a fonte continua sendo:
 
 !!! info "Disponível no MVP"
 
-O motor interpreta o conteúdo e organiza as exigências em requisitos individuais.
+Ao iniciar a análise, a jornada de produto cria o registro e executa o Interpreter. O conteúdo é organizado em requisitos individuais.
 
 Conceitualmente, nosso exemplo pode resultar em algo como:
 
@@ -58,7 +57,7 @@ Separar os requisitos é importante porque cada um pode ter uma condição, uma 
 
 !!! info "Disponível no MVP"
 
-O Supplier Ready preserva o trecho da fonte que sustenta cada requisito identificado.
+O Supplier Ready preserva o trecho da fonte que sustenta cada requisito identificado e a jornada atual também devolve a posição inicial e final desse trecho no texto recebido.
 
 Isso permite diferenciar claramente:
 
@@ -78,20 +77,39 @@ A interpretação ajuda a organizar a informação. **A fonte continua sendo a v
 
 A expressão **“quando aplicável”** não informa, sozinha, se o registro no conselho profissional é obrigatório para a sua empresa.
 
-O Supplier Ready deve preservar essa incerteza em vez de assumir uma resposta.
+O Supplier Ready preserva essa incerteza em vez de assumir uma resposta.
 
-A análise pode então precisar de um esclarecimento como:
+Quando existe uma condição cuja aplicabilidade ainda é desconhecida, a experiência atual apresenta um esclarecimento e permite responder **Sim** ou **Não**.
 
-> **Precisamos esclarecer**  
-> O registro no conselho profissional se aplica à atividade da sua empresa?
-
-O motor do MVP já possui o fluxo para planejar, listar e responder esclarecimentos.
+No contrato da API, essas respostas são representadas por `YES` e `NO` e resolvem a aplicabilidade para `APPLICABLE` ou `NOT_APPLICABLE`.
 
 > **Quando não souber, o Supplier Ready não deve adivinhar. Deve perguntar.**
 
+!!! warning "READY nesta etapa não é o Ready final"
+    Quando todos os esclarecimentos de interpretação são resolvidos, a API de produto usa o estado `READY`. Esse estado significa apenas que não existem esclarecimentos pendentes; não significa que todos os requisitos estejam atendidos ou que a empresa já esteja pronta para homologação.
+
 ---
 
-## 5. A realidade da sua empresa entra na análise
+## 5. Revise o que foi entendido
+
+!!! info "Disponível no MVP"
+
+Depois que não existem esclarecimentos pendentes, a experiência apresenta os requisitos interpretados.
+
+Para cada requisito, a jornada atual consegue mostrar informações como:
+
+- nome;
+- categoria e tipo;
+- aplicabilidade;
+- condição, quando existir;
+- trecho da fonte;
+- posição desse trecho no texto original.
+
+A análise também mantém incertezas explícitas para que não sejam confundidas com fatos.
+
+---
+
+## 6. A realidade da sua empresa entra na análise
 
 !!! note "Em desenvolvimento — experiência do produto"
 
@@ -103,16 +121,18 @@ Para o exemplo, algumas perguntas passam a importar:
 - A atividade da empresa exige registro em conselho profissional?
 - Se exige, a empresa possui o registro necessário?
 
-É essa comparação que permite transformar requisitos em gaps concretos, em vez de apenas produzir uma lista de documentos.
+É essa comparação que permitirá transformar requisitos em gaps concretos, em vez de apenas produzir uma lista de documentos.
+
+A experiência pública atual ainda não coleta de ponta a ponta as evidências de atendimento necessárias para produzir essa avaliação.
 
 ---
 
-## 6. A análise caminha para Readiness
+## 7. A análise caminha para Readiness
 
-!!! info "Disponível no MVP"
-    O cálculo determinístico de readiness já existe no motor. A experiência integrada que produzirá automaticamente todas as avaliações necessárias para o usuário ainda está em desenvolvimento.
+!!! info "Disponível no MVP — motor"
+    O cálculo determinístico de readiness já existe no motor, mas ainda não está exposto na jornada web/API de produto atual porque depende das avaliações dos requisitos.
 
-Conforme os requisitos são avaliados, eles podem assumir situações como:
+Quando essas avaliações estiverem disponíveis, elas podem assumir situações como:
 
 - **Atendido** — a empresa cumpre o requisito.
 - **Parcial** — o requisito foi atendido apenas em parte.
@@ -122,11 +142,11 @@ Conforme os requisitos são avaliados, eles podem assumir situações como:
 
 Requisitos cuja aplicabilidade ainda não foi determinada permanecem pendentes até que exista informação suficiente para avaliá-los.
 
-A readiness transforma essas avaliações em uma visão objetiva do quanto já está resolvido e do que ainda impede a empresa de avançar.
+A readiness transforma essas avaliações em uma visão objetiva do quanto já está resolvido.
 
 ---
 
-## 7. O objetivo é chegar ao Ready
+## 8. O objetivo continua sendo chegar ao Ready
 
 !!! note "Em desenvolvimento — experiência do produto"
 
@@ -139,14 +159,14 @@ Queremos que uma análise consiga responder, de forma simples:
 **O que ainda falta?**  
 **O que precisa ser esclarecido?**
 
-Quando tudo que precisa ser resolvido estiver resolvido, sua empresa estará **Ready** para avançar com aquele cliente.
+O estado final de produto **Ready** ainda será definido e implementado sobre as etapas de avaliação, gaps e bloqueios. Ele não deve ser confundido com `ProductAnalysisState.READY`, usado hoje apenas pela etapa de interpretação.
 
 ---
 
 ## O que você viu nesta primeira análise
 
-Uma exigência aparentemente simples pode conter múltiplos requisitos, condições e dúvidas. O Supplier Ready transforma esse conteúdo em uma estrutura que preserva a fonte, torna a incerteza explícita e prepara o caminho para identificar os gaps da sua empresa.
+Uma exigência aparentemente simples pode conter múltiplos requisitos, condições e dúvidas. O Supplier Ready já consegue transformar esse conteúdo em uma estrutura rastreável, resolver condições de aplicabilidade e apresentar o que foi entendido sem esconder incertezas.
 
-A experiência completa ainda está sendo construída, mas o núcleo que sustenta esse fluxo já está tomando forma no MVP.
+O próximo grande passo da experiência é conectar essa interpretação à realidade da empresa para avaliar atendimento, gaps e readiness.
 
 [Entenda como os requisitos são interpretados →](../concepts/requirement-interpretation.md){ .md-button .md-button--primary }
